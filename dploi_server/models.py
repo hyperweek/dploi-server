@@ -1,6 +1,9 @@
 #-*- coding: utf-8 -*-
 import random
+
 from django.db import models
+from django.contrib.auth.models import User
+
 from dploi_server.utils.password import generate_password
 from dploi_server.validation import variable_name_validator, variable_name_and_dash_validator
 
@@ -290,6 +293,21 @@ class SolrInstance(models.Model):
 
     def get_default_name(self):
         return self.deployment.identifier
+
+    def get_default_password(self):
+        return generate_password()
+
+
+class UserInstance(models.Model):
+    user = models.ForeignKey(User, related_name='instances')
+    deployment = models.ForeignKey(Deployment, related_name='user_instances')
+
+    password = models.CharField(max_length=255)
+
+    def save(self, *args, **kwargs):
+        super(UserInstance, self).save(*args, **kwargs)
+        self.user.set_password(self.password)
+        self.user.save()
 
     def get_default_password(self):
         return generate_password()

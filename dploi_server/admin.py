@@ -4,7 +4,7 @@ from dploi_server.models import (Realm, Host,
     Postgres, Mysql, Gunicorn, RabbitMq, Celery, Redis, Solr,
     Application, Deployment, DomainName, DomainAlias, DomainRedirect,
     PostgresInstance, MysqlInstance, GunicornInstance, RabbitMqInstance,
-    CeleryInstance, RedisInstance, SolrInstance, LoadBalancer)
+    CeleryInstance, RedisInstance, SolrInstance, UserInstance, LoadBalancer)
 
 
 ###############
@@ -146,6 +146,11 @@ class SolrInstanceInline(TabularInline):
     readonly_fields = ('name', 'password',)
 
 
+class UserInstanceInline(TabularInline):
+    model = UserInstance
+    readonly_fields = ('password',)
+
+
 class DeploymentAdmin(admin.ModelAdmin):
     list_display = ('identifier', 'name', 'application', 'is_live',)
     list_filter = ('name',)
@@ -154,7 +159,7 @@ class DeploymentAdmin(admin.ModelAdmin):
         DomainAliasInline, DomainRedirectInline,
         PostgresInstanceInline, MysqlInstanceInline, GunicornInstanceInline,
         RabbitMqInstanceInline, CeleryInstanceInline,
-        RedisInstanceInline, SolrInstanceInline,
+        RedisInstanceInline, SolrInstanceInline, UserInstanceInline,
     )
 
 
