@@ -1,7 +1,9 @@
 #-*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 from djangorestframework.resources import ModelResource, FormResource
-from dploi_server.models import PostgresInstance, LoadBalancer, DomainAlias, GunicornInstance
-from .models import Realm, Application, Deployment
+from .models import PostgresInstance, LoadBalancer, DomainAlias, GunicornInstance
+from .models import Application, Deployment
 
 
 #class RealmResource(ModelResource):
@@ -35,6 +37,7 @@ class PostgresDatabaseConfigResource(FormResource):
     def port(self, instance):
         return instance.service.port
 
+
 class LoadBalancerConfigResource(FormResource):
     model = LoadBalancer
     fields = ('ipv4',)
@@ -42,12 +45,14 @@ class LoadBalancerConfigResource(FormResource):
     def ipv4(self, instance):
         return instance.host.public_ipv4
 
+
 class DomainAliasConfigResource(FormResource):
-    model = DomainAlias # Doesnt seem to be used?
+    model = DomainAlias  # Doesnt seem to be used?
     fields = ('name',)
 
+
 class GunicornInstanceConfigResource(FormResource):
-    model = GunicornInstance # Doesnt seem to be used?
+    model = GunicornInstance  # Doesnt seem to be used?
     fields = ('workers', 'max_requests', 'ipv4', 'hostname')
 
     def hostname(self, instance):

@@ -57,7 +57,7 @@ class BaseService(models.Model):
     is_enabled = models.BooleanField()  # mainly here so that inlines display correctly in admin ;-P
 
     class Meta:
-        abstract=True
+        abstract = True
 
     def __unicode__(self):
         return u"%s (%s)" % (self.__class__.__name__, self.host)
@@ -125,7 +125,7 @@ class Deployment(models.Model):
     application = models.ForeignKey(Application, related_name='deployments')
     is_live = models.BooleanField(default=False)
     identifier = models.CharField(max_length=255, unique=True, validators=[variable_name_and_dash_validator],
-                                  help_text='system wide unique identifier of this deplpyment')
+                                  help_text='system wide unique identifier of this deployment')
     name = models.CharField(max_length=255, validators=[variable_name_validator])
     description = models.TextField(blank=True, default='')
     private_key = models.TextField(blank=True, default='', help_text='private deployment ssh key for source code access')
@@ -141,7 +141,7 @@ class Deployment(models.Model):
         unique_together = (('application', 'name',),)
 
     # Defaults
-    
+
     def get_default_identifier(self):
         return u"%s-%s" % (self.application.name, self.name)
 
@@ -241,7 +241,7 @@ class RedisInstance(models.Model):
         unique_together = ('service', 'port',)
 
     def get_default_port(self):
-        return random.randrange(50000,52000)
+        return random.randrange(50000, 52000)
 
     def get_default_access_token(self):
         return generate_password(length=30)
@@ -256,7 +256,7 @@ class SolrInstance(models.Model):
 
     class Meta:
         unique_together = ('name', 'service')
-    
+
     def get_default_name(self):
         return self.deployment.identifier
 
@@ -264,12 +264,11 @@ class SolrInstance(models.Model):
         return generate_password()
 
 
-
 ###########
 # Signals #
 ###########
-
 from django.db.models.signals import pre_save
+
 
 def set_defaults(sender, **kwargs):
     """

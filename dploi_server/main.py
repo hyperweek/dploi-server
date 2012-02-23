@@ -4,6 +4,7 @@ main start script for the "dploi-server" command
 """
 from django.core import management
 
+
 def main(settings_file='dploi_server.settings'):
     try:
         mod = __import__(settings_file)

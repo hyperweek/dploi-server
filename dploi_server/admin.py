@@ -1,11 +1,10 @@
 #-*- coding: utf-8 -*-
 from django.contrib import admin
 from dploi_server.models import (Realm, Host,
-              Postgres, Gunicorn, RabbitMq, Celery, Redis, Solr,
-              Application, Deployment, DomainName, DomainAlias, DomainRedirect,
-              PostgresInstance, GunicornInstance, RabbitMqInstance, CeleryInstance, RedisInstance, SolrInstance, LoadBalancer)
-
-
+    Postgres, Gunicorn, RabbitMq, Celery, Redis, Solr,
+    Application, Deployment, DomainName, DomainAlias, DomainRedirect,
+    PostgresInstance, GunicornInstance, RabbitMqInstance, CeleryInstance,
+    RedisInstance, SolrInstance, LoadBalancer)
 
 
 ###############
