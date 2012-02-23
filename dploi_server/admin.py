@@ -1,10 +1,10 @@
 #-*- coding: utf-8 -*-
 from django.contrib import admin
 from dploi_server.models import (Realm, Host,
-    Postgres, Gunicorn, RabbitMq, Celery, Redis, Solr,
+    Postgres, Mysql, Gunicorn, RabbitMq, Celery, Redis, Solr,
     Application, Deployment, DomainName, DomainAlias, DomainRedirect,
-    PostgresInstance, GunicornInstance, RabbitMqInstance, CeleryInstance,
-    RedisInstance, SolrInstance, LoadBalancer)
+    PostgresInstance, MysqlInstance, GunicornInstance, RabbitMqInstance,
+    CeleryInstance, RedisInstance, SolrInstance, LoadBalancer)
 
 
 ###############
@@ -45,6 +45,10 @@ class PostgresInline(TabularInline):
     model = Postgres
 
 
+class MysqlInline(TabularInline):
+    model = Mysql
+
+
 class GunicornInline(TabularInline):
     model = Gunicorn
 
@@ -68,7 +72,10 @@ class SolrInline(TabularInline):
 class HostAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_ipv4', 'private_ipv4', 'realm',)
     list_filter = ('realm',)
-    inlines = (LoadBalancerInline, PostgresInline, GunicornInline, RabbitMqInline, CeleryInline, RedisInline, SolrInline)
+    inlines = (
+        LoadBalancerInline, PostgresInline, MysqlInline, GunicornInline,
+        RabbitMqInline, CeleryInline, RedisInline, SolrInline,
+    )
 
 
 admin.site.register(Host, HostAdmin)
@@ -111,6 +118,11 @@ class PostgresInstanceInline(TabularInline):
     readonly_fields = ('name', 'user', 'password',)
 
 
+class MysqlInstanceInline(TabularInline):
+    model = MysqlInstance
+    readonly_fields = ('name', 'user', 'password',)
+
+
 class GunicornInstanceInline(TabularInline):
     model = GunicornInstance
 
@@ -138,9 +150,12 @@ class DeploymentAdmin(admin.ModelAdmin):
     list_display = ('identifier', 'name', 'application', 'is_live',)
     list_filter = ('name',)
     readonly_fields = ('identifier',)
-    inlines = (DomainAliasInline, DomainRedirectInline,
-               PostgresInstanceInline, GunicornInstanceInline, RabbitMqInstanceInline, CeleryInstanceInline,
-               RedisInstanceInline, SolrInstanceInline)
+    inlines = (
+        DomainAliasInline, DomainRedirectInline,
+        PostgresInstanceInline, MysqlInstanceInline, GunicornInstanceInline,
+        RabbitMqInstanceInline, CeleryInstanceInline,
+        RedisInstanceInline, SolrInstanceInline,
+    )
 
 
 admin.site.register(Deployment, DeploymentAdmin)

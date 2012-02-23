@@ -71,6 +71,10 @@ class Postgres(BaseService):
     port = models.IntegerField(default=5432)
 
 
+class Mysql(BaseService):
+    port = models.IntegerField(default=3306)
+
+
 class Gunicorn(BaseService):
     pass
 
@@ -168,6 +172,33 @@ class PostgresInstance(models.Model):
     alias = models.CharField(max_length=255, default='default', validators=[variable_name_validator],
                              help_text="Used as the django database alias.")
     name = models.CharField(max_length=255, help_text="postgres database name", validators=[variable_name_and_dash_validator])
+    user = models.CharField(max_length=255, validators=[variable_name_and_dash_validator])
+    password = models.CharField(max_length=255)
+
+    class Meta:
+        unique_together = ('name', 'service',)
+
+    def __unicode__(self):
+        return u"%s-%s" % (self.service, self.deployment,)
+
+    # Default values
+    def get_default_name(self):
+        return self.deployment.identifier
+
+    def get_default_user(self):
+        return self.deployment.identifier
+
+    def get_default_password(self):
+        return generate_password()
+
+
+class MysqlInstance(models.Model):
+    service = models.ForeignKey(Mysql, related_name='instances')
+    deployment = models.ForeignKey(Deployment, related_name='mysql_instances')
+
+    alias = models.CharField(max_length=255, default='default', validators=[variable_name_validator],
+                             help_text="Used as the django database alias.")
+    name = models.CharField(max_length=255, help_text="mysql database name", validators=[variable_name_and_dash_validator])
     user = models.CharField(max_length=255, validators=[variable_name_and_dash_validator])
     password = models.CharField(max_length=255)
 
