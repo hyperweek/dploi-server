@@ -4,3 +4,4 @@ include
 lib
 .db.sqlite3
 share
+*.pyc
