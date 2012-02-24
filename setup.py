@@ -10,9 +10,10 @@ setup(
     url='https://github.com/dploi/dploi-server',
     packages=find_packages(),
     install_requires=[
-        'Django>=1.3.1',
-        'South>=0.7.3',
-        'djangorestframework>=0.2.3',
+        'Django==1.3.1',
+        'South==0.7.3',
+        'djangorestframework==0.2.3',
+        'pyyaml',
     ],
     entry_points={
         'console_scripts': [
