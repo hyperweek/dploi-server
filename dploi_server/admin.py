@@ -138,7 +138,7 @@ class CeleryInstanceInline(TabularInline):
 
 class RedisInstanceInline(TabularInline):
     model = RedisInstance
-    readonly_fields = ('access_token',)
+    readonly_fields = ('port', 'access_token',)
 
 
 class SolrInstanceInline(TabularInline):
