@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='dploi-server',
-    version='0.2a',
+    version='0.3',
     description='The awesome deployment server for django apps',
     author='Stefan Foulis',
     author_email='stefan.foulis@gmail.com',
