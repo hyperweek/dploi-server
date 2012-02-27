@@ -312,6 +312,7 @@ class UserInstance(models.Model):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('e-mail address'), blank=True)
     raw_password = models.CharField(max_length=255)
+    notified = models.BooleanField(default=False)
 
     @property
     def password(self, *args, **kwargs):
