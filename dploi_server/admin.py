@@ -148,7 +148,7 @@ class SolrInstanceInline(TabularInline):
 
 class UserInstanceInline(TabularInline):
     model = UserInstance
-    readonly_fields = ('password',)
+    readonly_fields = ('raw_password',)
 
 
 class DeploymentAdmin(admin.ModelAdmin):

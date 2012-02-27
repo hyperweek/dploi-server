@@ -1,11 +1,16 @@
 #-*- coding: utf-8 -*-
+import re
 import random
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
+from django.core.validators import RegexValidator
 
 from dploi_server.utils.password import generate_password
 from dploi_server.validation import variable_name_validator, variable_name_and_dash_validator
+
+username_re = re.compile(r'^[\w.@+-]+$')
+validate_username = RegexValidator(username_re, _(u'Letters, digits and @/./+/-/_ only.'), 'invalid')
 
 
 class Realm(models.Model):
@@ -299,17 +304,25 @@ class SolrInstance(models.Model):
 
 
 class UserInstance(models.Model):
-    user = models.ForeignKey(User, related_name='instances')
     deployment = models.ForeignKey(Deployment, related_name='user_instances')
 
-    password = models.CharField(max_length=255)
+    username = models.CharField(_('username'), max_length=30, validators=[validate_username],
+        help_text=_("Required. 30 characters or fewer. Letters, numbers and @/./+/-/_ characters"))
+    first_name = models.CharField(_('first name'), max_length=30, blank=True)
+    last_name = models.CharField(_('last name'), max_length=30, blank=True)
+    email = models.EmailField(_('e-mail address'), blank=True)
+    raw_password = models.CharField(max_length=255)
 
-    def save(self, *args, **kwargs):
-        super(UserInstance, self).save(*args, **kwargs)
-        self.user.set_password(self.password)
-        self.user.save()
+    @property
+    def password(self, *args, **kwargs):
+        import random
+        from django.contrib.auth.models import get_hexdigest
+        algo = 'sha1'
+        salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
+        hsh = get_hexdigest(algo, salt, self.raw_password)
+        return '%s$%s$%s' % (algo, salt, hsh)
 
-    def get_default_password(self):
+    def get_default_raw_password(self):
         return generate_password()
 
 
