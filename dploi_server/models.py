@@ -3,8 +3,10 @@ import re
 import random
 
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import RegexValidator
+from django.contrib.auth.models import get_hexdigest
 
 from dploi_server.utils.password import generate_password
 from dploi_server.validation import variable_name_validator, variable_name_and_dash_validator
@@ -312,16 +314,20 @@ class UserInstance(models.Model):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('e-mail address'), blank=True)
     raw_password = models.CharField(max_length=255)
+    password = models.CharField(max_length=255, editable=False)
     notified = models.BooleanField(default=False)
 
-    @property
-    def password(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
+        if not self.password:
+            self.set_password(self.raw_password)
+        super(UserInstance, self).save(*args, **kwargs)
+
+    def set_password(self, raw_password):
         import random
-        from django.contrib.auth.models import get_hexdigest
         algo = 'sha1'
         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
-        hsh = get_hexdigest(algo, salt, self.raw_password)
-        return '%s$%s$%s' % (algo, salt, hsh)
+        hsh = get_hexdigest(algo, salt, raw_password)
+        self.password = '%s$%s$%s' % (algo, salt, hsh)
 
     def get_default_raw_password(self):
         return generate_password()
