@@ -317,7 +317,7 @@ class UserInstance(models.Model):
     notified = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if not self.password:
+        if not self.password and self.raw_password:
             self.set_password(self.raw_password)
         super(UserInstance, self).save(*args, **kwargs)
 
