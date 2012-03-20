@@ -313,20 +313,15 @@ class UserInstance(models.Model):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     email = models.EmailField(_('e-mail address'), blank=True)
     raw_password = models.CharField(max_length=255)
-    password = models.CharField(max_length=255, editable=False)
     notified = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        if not self.password and self.raw_password:
-            self.set_password(self.raw_password)
-        super(UserInstance, self).save(*args, **kwargs)
-
-    def set_password(self, raw_password):
+    @property
+    def password(self):
         import random
         algo = 'sha1'
         salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
-        hsh = get_hexdigest(algo, salt, raw_password)
-        self.password = '%s$%s$%s' % (algo, salt, hsh)
+        hsh = get_hexdigest(algo, salt, self.raw_password)
+        return '%s$%s$%s' % (algo, salt, hsh)
 
     def get_default_raw_password(self):
         return generate_password()
