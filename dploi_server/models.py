@@ -47,6 +47,7 @@ class Host(models.Model):
     public_ipv4 = models.CharField(max_length=15)
     private_ipv4 = models.CharField(max_length=15)
 
+    @property
     def hostname(self):
         return "%s.%s" % (self.name, self.realm.base_domain)
 
